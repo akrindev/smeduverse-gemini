@@ -9,6 +9,8 @@ export default function DashboardPage() {
   const [alertOpened, setAlertOpened] = useState(false);
   //   message
   const [message, setMessage] = useState("");
+  // results
+  const [results, setResults] = useState([]);
 
   const debounce = <T extends (...args: any[]) => void>(
     func: T,
@@ -33,7 +35,10 @@ export default function DashboardPage() {
   // because it will be updated after the delay
 
   const qrCodeSuccessCallback = debounce((qrCodeMessage: string) => {
-    console.log(qrCodeMessage);
+    console.log("scanned", qrCodeMessage);
+
+    // set results
+    setResults((prev) => [...prev, qrCodeMessage]);
 
     // last scanned qrcode
     if (tokenized !== qrCodeMessage) {
@@ -58,41 +63,47 @@ export default function DashboardPage() {
   //   use effect to remove last scanned qrcode after 3 seconds using interval
   useEffect(() => {
     const interval = setInterval(() => {
-      setTokenized("");
+      setTokenized((prev) => "");
+      console.log("interval");
     }, 3000);
     return () => clearInterval(interval);
   }, []);
+
+  // on alert is open then it will automatically close after 3 seconds
+  useEffect(() => {
+    if (alertOpened) {
+      setTimeout(() => {
+        setAlertOpened(false);
+      }, 1500);
+    }
+  }, [alertOpened]);
 
   return (
     <KonstaLayouts>
       <Page>
         <Navbar title='Dashboard' />
-        <Block>Scan QRCode</Block>
+        <Block>Scan Kehadiran</Block>
         <Block>
-          <div className='min-h-96 min-w-96'>
+          <div className='max-h-96 max-w-96'>
             <QRCode
               fps={10}
               qrbox={300}
               aspectRatio={1.0}
-              disableFlip={false}
+              disableFlip={true}
               verbose={false}
               qrCodeSuccessCallback={qrCodeSuccessCallback}
             />
           </div>
         </Block>
         <Block>{tokenized}</Block>
+        <Block>{results}</Block>
       </Page>
 
       <Dialog
         opened={alertOpened}
         onBackdropClick={() => setAlertOpened(false)}
-        title='Info'
+        title='Alert'
         content={message}
-        buttons={
-          <DialogButton onClick={() => setAlertOpened(false)}>
-            Okay
-          </DialogButton>
-        }
       />
     </KonstaLayouts>
   );
