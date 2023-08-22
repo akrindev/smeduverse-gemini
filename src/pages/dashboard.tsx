@@ -3,6 +3,9 @@ import QRCode from "@/components/qrcode";
 import { Page, Block, Navbar, Dialog, DialogButton } from "konsta/react";
 import { useEffect, useState } from "react";
 import { api } from "@/hooks/auth";
+import success from "../assets/success.json";
+import error from "../assets/error.json";
+import Lottie from "react-lottie";
 
 export default function DashboardPage() {
   const [tokenized, setTokenized] = useState("");
@@ -11,6 +14,8 @@ export default function DashboardPage() {
   const [message, setMessage] = useState("");
   // results
   const [results, setResults] = useState([]);
+  // is error
+  const [isError, setIsError] = useState(false);
 
   const debounce = <T extends (...args: any[]) => void>(
     func: T,
@@ -33,9 +38,9 @@ export default function DashboardPage() {
   // and use lastScannedQRCodeMessage to store the last scanned qrcode
   // and dont use lastScannedQRCodeMessage directly
   // because it will be updated after the delay
-
   const qrCodeSuccessCallback = debounce((qrCodeMessage: string) => {
     console.log("scanned", qrCodeMessage);
+    setIsError(false);
 
     // set results
     setResults((prev) => [...prev, qrCodeMessage]);
@@ -56,6 +61,7 @@ export default function DashboardPage() {
         .catch((error) => {
           setAlertOpened(true);
           setMessage(error.response.data.message);
+          setIsError(true);
         });
     }
   }, 2500);
@@ -71,12 +77,46 @@ export default function DashboardPage() {
 
   // on alert is open then it will automatically close after 3 seconds
   useEffect(() => {
+    // there are 2 sounds, success and error
+    // success sound will be played when qrcode success scanned
+    // error sound will be played when qrcode failed scanned
+    const successSound = new Audio("/sounds/eventually.ogg");
+    const errorSound = new Audio("/sounds/failure.ogg");
     if (alertOpened) {
       setTimeout(() => {
         setAlertOpened(false);
-      }, 1500);
+      }, 3000);
+
+      // if it is error then play error sound
+      if (isError) {
+        errorSound.play();
+      }
+
+      // if it is not error then play success sound
+      if (!isError) {
+        successSound.play();
+      }
     }
-  }, [alertOpened]);
+  }, [alertOpened, isError]);
+
+  // these options are lottie options
+  // it will be used to render lottie animation
+  const errorOptions = {
+    loop: true,
+    autoplay: true,
+    animationData: error,
+    rendererSettings: {
+      preserveAspectRatio: "xMidYMid slice",
+    },
+  };
+  const successOptions = {
+    loop: true,
+    autoplay: true,
+    animationData: success,
+    rendererSettings: {
+      preserveAspectRatio: "xMidYMid slice",
+    },
+  };
 
   return (
     <KonstaLayouts>
@@ -102,7 +142,18 @@ export default function DashboardPage() {
       <Dialog
         opened={alertOpened}
         onBackdropClick={() => setAlertOpened(false)}
-        title='Alert'
+        title={
+          isError ? (
+            <Lottie
+              options={errorOptions}
+              speed={0.5}
+              height={180}
+              width={180}
+            />
+          ) : (
+            <Lottie options={successOptions} height={180} width={180} />
+          )
+        }
         content={message}
       />
     </KonstaLayouts>
