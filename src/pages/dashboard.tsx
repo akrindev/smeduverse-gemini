@@ -6,6 +6,8 @@ import { api } from "@/hooks/auth";
 import success from "../assets/success.json";
 import error from "../assets/error.json";
 import Lottie from "react-lottie";
+import { useAttendance } from "@/store/attendance";
+import LatestAttendances from "@/components/latest-attendances";
 
 export default function DashboardPage() {
   const [tokenized, setTokenized] = useState("");
@@ -16,6 +18,9 @@ export default function DashboardPage() {
   const [results, setResults] = useState([]);
   // is error
   const [isError, setIsError] = useState(false);
+
+  // to refetch attendances
+  const fetchAttendances = useAttendance((state) => state.fetchAttendances);
 
   const debounce = <T extends (...args: any[]) => void>(
     func: T,
@@ -53,10 +58,10 @@ export default function DashboardPage() {
         .post("/api/attendance/apel/store", { nis: qrCodeMessage })
         // then console log the response
         .then((response) => {
-          // hikshiks
-          console.log("res", response);
           setAlertOpened(true);
           setMessage(response.data.message);
+
+          fetchAttendances();
         })
         .catch((error) => {
           setAlertOpened(true);
@@ -64,13 +69,13 @@ export default function DashboardPage() {
           setIsError(true);
         });
     }
-  }, 2500);
+  }, 1000);
 
   //   use effect to remove last scanned qrcode after 3 seconds using interval
   useEffect(() => {
     const interval = setInterval(() => {
       setTokenized((prev) => "");
-      console.log("interval");
+      // console.log("interval");
     }, 3000);
     return () => clearInterval(interval);
   }, []);
@@ -129,14 +134,13 @@ export default function DashboardPage() {
               fps={10}
               qrbox={300}
               aspectRatio={1.0}
-              disableFlip={true}
+              disableFlip={false}
               verbose={false}
               qrCodeSuccessCallback={qrCodeSuccessCallback}
             />
           </div>
         </Block>
-        <Block>{tokenized}</Block>
-        <Block>{results}</Block>
+        <LatestAttendances />
       </Page>
 
       <Dialog
