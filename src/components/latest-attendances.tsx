@@ -68,7 +68,7 @@ export default function LatestAttendances() {
 
   // confirmed delte
   const onConfirmedDelete = () => {
-    const successSound = new Audio("/sounds/successful.ogg");
+    const successSound = new Audio("/sounds/eventually.ogg");
 
     setIsLoading(true);
     deleteAttendance(selectedId!).finally(() => {

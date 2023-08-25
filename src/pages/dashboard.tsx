@@ -93,7 +93,7 @@ export default function DashboardPage() {
     // there are 2 sounds, success and error
     // success sound will be played when qrcode success scanned
     // error sound will be played when qrcode failed scanned
-    const successSound = new Audio("/sounds/eventually.ogg");
+    const successSound = new Audio("/sounds/successful.ogg");
     const errorSound = new Audio("/sounds/failure.ogg");
     if (alertOpened) {
       setTimeout(() => {
