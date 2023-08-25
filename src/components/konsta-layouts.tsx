@@ -3,8 +3,8 @@ import { PropsWithChildren } from "react";
 
 export default function KonstaLayouts({ children }: PropsWithChildren) {
   return (
-    <KonstaProvider>
-      <App safeAreas theme='ios'>
+    <KonstaProvider theme='ios'>
+      <App safeAreas theme='ios' className='k-ios'>
         {children}
       </App>
     </KonstaProvider>

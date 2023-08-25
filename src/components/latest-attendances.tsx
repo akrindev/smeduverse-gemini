@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { useAttendance } from "@/store/attendance";
 import { Attendance } from "@/types/attendances";
-import { Block, List, ListItem, Toast } from "konsta/react";
+import { Block, BlockTitle, List, ListItem, Toast } from "konsta/react";
 import { format } from "date-fns";
 
 export default function LatestAttendances() {
@@ -23,21 +23,27 @@ export default function LatestAttendances() {
 
   return (
     <>
-      <Block>Kehadiran terakhir</Block>
+      <BlockTitle>Kehadiran terakhir</BlockTitle>
       <Block>
-        <List strongIos outlineIos>
-          {attendances.map((attendance) => (
-            <ListItem
-              key={attendance.id}
-              link
-              onClick={() => onItemClicked(attendance.id)}
-              chevronMaterial={false}
-              title={attendance.student.fullname}
-              after={format(new Date(attendance.attendance_date), "HH:mm")}
-              subtitle={`${attendance.student.nipd} - ${attendance.rombel.nama}`}
-            />
-          ))}
-        </List>
+        {attendances.length === 0 ? (
+          <Block strong>
+            <p>Belum ada presensi untuk ditampilkan</p>
+          </Block>
+        ) : (
+          <List strongIos outlineIos>
+            {attendances.map((attendance) => (
+              <ListItem
+                key={attendance.id}
+                link
+                onClick={() => onItemClicked(attendance.id)}
+                chevronMaterial={false}
+                title={attendance.student.fullname}
+                after={format(new Date(attendance.attendance_date), "HH:mm")}
+                subtitle={`${attendance.student.nipd} - ${attendance.rombel.nama}`}
+              />
+            ))}
+          </List>
+        )}
       </Block>
 
       <Toast position='left' opened={toastLeftOpened}>

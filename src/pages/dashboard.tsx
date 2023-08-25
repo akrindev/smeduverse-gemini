@@ -1,6 +1,13 @@
 import KonstaLayouts from "@/components/konsta-layouts";
 import QRCode from "@/components/qrcode";
-import { Page, Block, Navbar, Dialog, DialogButton } from "konsta/react";
+import {
+  Page,
+  Block,
+  Navbar,
+  Dialog,
+  DialogButton,
+  BlockTitle,
+} from "konsta/react";
 import { useEffect, useState } from "react";
 import { api } from "@/hooks/auth";
 import success from "../assets/success.json";
@@ -8,6 +15,7 @@ import error from "../assets/error.json";
 import Lottie from "react-lottie";
 import { useAttendance } from "@/store/attendance";
 import LatestAttendances from "@/components/latest-attendances";
+import Head from "next/head";
 
 export default function DashboardPage() {
   const [tokenized, setTokenized] = useState("");
@@ -125,9 +133,12 @@ export default function DashboardPage() {
 
   return (
     <KonstaLayouts>
+      <Head>
+        <title>Dashboard</title>
+      </Head>
       <Page>
         <Navbar title='Dashboard' />
-        <Block>Scan Kehadiran</Block>
+        <BlockTitle>Scan Kehadiran</BlockTitle>
         <Block>
           <div className='max-h-96 max-w-96'>
             <QRCode
