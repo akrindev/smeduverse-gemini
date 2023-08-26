@@ -16,6 +16,7 @@ import Lottie from "react-lottie";
 import { useAttendance } from "@/store/attendance";
 import LatestAttendances from "@/components/latest-attendances";
 import Head from "next/head";
+import WithNavbar from "@/components/with-navbar";
 
 export default function DashboardPage() {
   const [tokenized, setTokenized] = useState("");
@@ -136,22 +137,25 @@ export default function DashboardPage() {
       <Head>
         <title>Dashboard</title>
       </Head>
+      {/*  */}
       <Page>
-        <Navbar title='Dashboard' />
-        <BlockTitle>Scan Kehadiran</BlockTitle>
-        <Block>
-          <div className='max-h-96 max-w-96'>
-            <QRCode
-              fps={10}
-              qrbox={300}
-              aspectRatio={1.0}
-              disableFlip={false}
-              verbose={false}
-              qrCodeSuccessCallback={qrCodeSuccessCallback}
-            />
-          </div>
-        </Block>
-        <LatestAttendances />
+        <WithNavbar>
+          <Navbar title='Dashboard' />
+          <BlockTitle>Scan Kehadiran</BlockTitle>
+          <Block>
+            <div className='max-h-96 max-w-96'>
+              <QRCode
+                fps={10}
+                qrbox={300}
+                aspectRatio={1.0}
+                disableFlip={false}
+                verbose={false}
+                qrCodeSuccessCallback={qrCodeSuccessCallback}
+              />
+            </div>
+          </Block>
+          <LatestAttendances />
+        </WithNavbar>
       </Page>
 
       <Dialog
