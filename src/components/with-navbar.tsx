@@ -1,4 +1,4 @@
-import { IconHome, IconSettings } from "@tabler/icons-react";
+import { IconFileChart, IconHome, IconSettings } from "@tabler/icons-react";
 import { Tabbar, TabbarLink } from "konsta/react";
 import { useRouter } from "next/router";
 import { PropsWithChildren, useState } from "react";
@@ -25,6 +25,12 @@ export default function WithNavbar({ children }: PropsWithChildren) {
           onClick={() => navigate("/dashboard")}
           icon={<IconHome className='w-8 h-8' />}
           label={"Home"}
+        />
+        <TabbarLink
+          active={pathname === "/rekap"}
+          onClick={() => navigate("/rekap")}
+          icon={<IconFileChart className='w-8 h-8' />}
+          label={"Rekap"}
         />
         <TabbarLink
           active={pathname === "/setting"}

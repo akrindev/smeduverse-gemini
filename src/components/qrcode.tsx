@@ -72,7 +72,7 @@ const QRCode = (props: ConfigProps) => {
         console.error("Failed to clear html5QrcodeScanner. ", error);
       });
     };
-  });
+  }, []);
 
   return <div id={qrcodeRegionId} />;
 };

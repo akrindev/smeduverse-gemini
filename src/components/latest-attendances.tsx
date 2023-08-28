@@ -118,20 +118,21 @@ export default function LatestAttendances() {
         onBackdropClick={() => setDialogOpened(false)}
         title='Hapus kehadiran ini?'
         content='Kehadiran akan dihapus'
-        buttons={
-          <>
-            <DialogButton key='cancel' onClick={() => setDialogOpened(false)}>
-              Batal
-            </DialogButton>
-            <DialogButton
-              key='delete'
-              onClick={onConfirmedDelete}
-              disabled={isLoading}>
-              {isLoading ? <Preloader /> : "Hapus"}
-            </DialogButton>
-            ,
-          </>
-        }
+        buttons={[
+          <DialogButton
+            tabIndex={1}
+            key='cancel'
+            onClick={() => setDialogOpened(false)}>
+            Batal
+          </DialogButton>,
+          <DialogButton
+            tabIndex={2}
+            key='delete'
+            onClick={onConfirmedDelete}
+            disabled={isLoading}>
+            {isLoading ? <Preloader /> : "Hapus"}
+          </DialogButton>,
+        ]}
       />
 
       {/* dialog alert */}

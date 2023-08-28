@@ -1,3 +1,4 @@
+// Importing necessary libraries and components
 import KonstaLayouts from "@/components/konsta-layouts";
 import QRCode from "@/components/qrcode";
 import {
@@ -18,19 +19,19 @@ import LatestAttendances from "@/components/latest-attendances";
 import Head from "next/head";
 import WithNavbar from "@/components/with-navbar";
 
+// Main function for the Dashboard page
 export default function DashboardPage() {
-  const [tokenized, setTokenized] = useState("");
-  const [alertOpened, setAlertOpened] = useState(false);
-  //   message
-  const [message, setMessage] = useState("");
-  // results
-  const [results, setResults] = useState([]);
-  // is error
-  const [isError, setIsError] = useState(false);
+  // State variables
+  const [tokenized, setTokenized] = useState(""); // For storing tokenized QR code
+  const [alertOpened, setAlertOpened] = useState(false); // For handling alert dialog
+  const [message, setMessage] = useState(""); // For storing messages
+  const [results, setResults] = useState([]); // For storing results
+  const [isError, setIsError] = useState(false); // For error handling
 
-  // to refetch attendances
+  // Function to fetch attendances
   const fetchAttendances = useAttendance((state) => state.fetchAttendances);
 
+  // Debounce function to prevent multiple scans in quick succession
   const debounce = <T extends (...args: any[]) => void>(
     func: T,
     delay: number
@@ -44,28 +45,21 @@ export default function DashboardPage() {
     };
   };
 
-  // callback function
-  // it handle when qrcode success scanned
-  // it will have 1 argument of qrCodeMessage
-  // when it success scanned, it must be delayed for the next scan
-  // so it wont be scanned twice
-  // and use lastScannedQRCodeMessage to store the last scanned qrcode
-  // and dont use lastScannedQRCodeMessage directly
-  // because it will be updated after the delay
+  // Callback function for successful QR code scan
   const qrCodeSuccessCallback = debounce((qrCodeMessage: string) => {
     console.log("scanned", qrCodeMessage);
     setIsError(false);
 
-    // set results
+    // Updating results
     setResults((prev) => [...prev, qrCodeMessage]);
 
-    // last scanned qrcode
+    // Checking for duplicate scans
     if (tokenized !== qrCodeMessage) {
       setTokenized(qrCodeMessage);
 
+      // API call to store attendance
       api
         .post("/api/attendance/apel/store", { nis: qrCodeMessage })
-        // then console log the response
         .then((response) => {
           setAlertOpened(true);
           setMessage(response.data.message);
@@ -80,20 +74,16 @@ export default function DashboardPage() {
     }
   }, 1000);
 
-  //   use effect to remove last scanned qrcode after 3 seconds using interval
+  // Effect to remove last scanned QR code after 3 seconds
   useEffect(() => {
     const interval = setInterval(() => {
       setTokenized((prev) => "");
-      // console.log("interval");
     }, 3000);
     return () => clearInterval(interval);
   }, []);
 
-  // on alert is open then it will automatically close after 3 seconds
+  // Effect to handle alert dialog and play sounds
   useEffect(() => {
-    // there are 2 sounds, success and error
-    // success sound will be played when qrcode success scanned
-    // error sound will be played when qrcode failed scanned
     const successSound = new Audio("/sounds/successful.ogg");
     const errorSound = new Audio("/sounds/failure.ogg");
     if (alertOpened) {
@@ -101,20 +91,17 @@ export default function DashboardPage() {
         setAlertOpened(false);
       }, 3000);
 
-      // if it is error then play error sound
+      // Playing sounds based on success or failure
       if (isError) {
         errorSound.play();
       }
-
-      // if it is not error then play success sound
       if (!isError) {
         successSound.play();
       }
     }
   }, [alertOpened, isError]);
 
-  // these options are lottie options
-  // it will be used to render lottie animation
+  // Lottie options for animations
   const errorOptions = {
     loop: true,
     autoplay: true,
@@ -132,12 +119,12 @@ export default function DashboardPage() {
     },
   };
 
+  // Rendering the Dashboard page
   return (
     <KonstaLayouts>
       <Head>
         <title>Dashboard</title>
       </Head>
-      {/*  */}
       <Page>
         <WithNavbar>
           <Navbar title='Dashboard' />
