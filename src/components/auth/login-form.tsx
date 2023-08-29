@@ -62,7 +62,7 @@ export default function LoginForm() {
         />
       </List>
       <List inset strong>
-        <ListButton className='k-color-brand-red' onClick={submitForm}>
+        <ListButton onClick={submitForm}>
           {status == "loading" ? <Preloader /> : "Masuk"}
         </ListButton>
       </List>

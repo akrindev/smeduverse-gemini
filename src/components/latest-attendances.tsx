@@ -8,12 +8,10 @@ import {
   List,
   ListItem,
   Preloader,
-  Toast,
 } from "konsta/react";
 import { format } from "date-fns";
 
 import success from "../assets/success.json";
-import error from "../assets/error.json";
 import Lottie from "react-lottie";
 
 export default function LatestAttendances() {
@@ -25,6 +23,8 @@ export default function LatestAttendances() {
   const [isLoading, setIsLoading] = useState(false);
   // selected id
   const [selectedId, setSelectedId] = useState<number | null>(null);
+  // count down item clicked
+  const [countDownItemClicked, setCountDownItemClicked] = useState(0);
 
   const [attendances, fetchAttendances, deleteAttendance] = useAttendance(
     (state) => [
@@ -42,14 +42,6 @@ export default function LatestAttendances() {
   // lottie default
   // these options are lottie options
   // it will be used to render lottie animation
-  const errorOptions = {
-    loop: true,
-    autoplay: true,
-    animationData: error,
-    rendererSettings: {
-      preserveAspectRatio: "xMidYMid slice",
-    },
-  };
   const successOptions = {
     loop: true,
     autoplay: true,
@@ -60,10 +52,10 @@ export default function LatestAttendances() {
   };
 
   const onItemClicked = (id: number) => {
-    console.log("item clicked", id);
     setDialogOpened(true);
     // setToastLeftOpened(true);
     setSelectedId(id);
+    setCountDownItemClicked(5);
   };
 
   // confirmed delte
@@ -86,6 +78,15 @@ export default function LatestAttendances() {
       }, 3000);
     });
   };
+
+  // use effect to handle count down
+  useEffect(() => {
+    if (countDownItemClicked === 0) return;
+    const interval = setInterval(() => {
+      setCountDownItemClicked((prev) => prev - 1);
+    }, 1000);
+    return () => clearInterval(interval);
+  }, [countDownItemClicked]);
 
   return (
     <>
@@ -128,9 +129,18 @@ export default function LatestAttendances() {
           <DialogButton
             tabIndex={2}
             key='delete'
+            className='k-color-brand-red'
             onClick={onConfirmedDelete}
-            disabled={isLoading}>
-            {isLoading ? <Preloader /> : "Hapus"}
+            disabled={countDownItemClicked > 0 || isLoading}>
+            {isLoading ? (
+              <Preloader />
+            ) : (
+              `Hapus ${
+                countDownItemClicked > 0
+                  ? "(" + countDownItemClicked + "d)"
+                  : ""
+              }`
+            )}
           </DialogButton>,
         ]}
       />
