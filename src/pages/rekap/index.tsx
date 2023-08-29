@@ -1,11 +1,13 @@
 import { Page, Navbar, Block, BlockTitle, List, ListItem } from "konsta/react";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import LatestAttendances from "@/components/latest-attendances";
 import WithNavbar from "@/components/with-navbar";
 import KonstaLayouts from "@/components/konsta-layouts";
 import DialogRombel from "@/components/dialog-rombel";
 import DialogDate from "@/components/dialog-date";
 import RecapAttendance from "@/components/recap/attendances";
+import { useRecap } from "@/store/recap";
+import format from "date-fns/format";
 
 export default function RekapPage() {
   const [date, setDate] = useState("");
@@ -18,6 +20,8 @@ export default function RekapPage() {
   const [dialogRombelOpened, setDialogRombelOpened] = useState(false);
   // dialog date
   const [dialogDateOpened, setDialogDateOpened] = useState(false);
+  // fetch attendances
+  const fetchAttendances = useRecap((state) => state.fetchAttendances);
 
   // on selecting rombel
   const onSelectingRombel = () => {
@@ -29,6 +33,8 @@ export default function RekapPage() {
     setSelectedRombel(rombel);
     setDialogRombelOpened(false);
 
+    // fetch attendances
+    fetchAttendances(1, selectedDate, rombel?.id);
     console.log(rombel);
   };
 
@@ -36,7 +42,14 @@ export default function RekapPage() {
   const onSelectedDate = (date: any) => {
     setSelectedDate(date);
     setDialogDateOpened(false);
+
+    // refetch attendances
+    fetchAttendances(1, date, selectedRombel?.id);
   };
+
+  useEffect(() => {
+    setSelectedDate((prev) => format(new Date(), "yyyy-MM-dd"));
+  }, []);
 
   return (
     <KonstaLayouts>

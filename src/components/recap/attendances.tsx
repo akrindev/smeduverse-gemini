@@ -1,5 +1,6 @@
 import { useRecap } from "@/store/recap";
 import format from "date-fns/format";
+import id from "date-fns/locale/id";
 import { Block, BlockTitle, List, ListItem } from "konsta/react";
 import { useEffect, useState } from "react";
 
@@ -40,8 +41,20 @@ export default function RecapAttendance() {
             link
             chevronMaterial={false}
             title={attendance.student.fullname}
-            after={format(new Date(attendance.attendance_date), "HH:mm")}
-            subtitle={`${attendance.student.nipd} - ${attendance.rombel.nama}`}
+            after={attendance.rombel.nama}
+            // after={format(new Date(attendance.attendance_date), "HH:mm")}
+            subtitle={`${attendance.student.nipd} | ${format(
+              new Date(attendance.attendance_date),
+              // must be like Sen, 23 Ags 21 08:00
+              // if year is current yeat then remove the year
+              new Date(attendance.attendance_date).getFullYear() ===
+                new Date().getFullYear()
+                ? "EEE, dd MMM HH:mm"
+                : "EEE, dd MMM yy HH:mm",
+              {
+                locale: id,
+              }
+            )}`}
           />
         ))}
       </List>

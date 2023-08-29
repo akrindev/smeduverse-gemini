@@ -4,8 +4,6 @@ import { useRouter } from "next/router";
 import { PropsWithChildren, useState } from "react";
 
 export default function WithNavbar({ children }: PropsWithChildren) {
-  // active
-  const [activeTab, setActiveTab] = useState("dashboard");
   // use path as active tab
   const router = useRouter();
 
@@ -21,18 +19,21 @@ export default function WithNavbar({ children }: PropsWithChildren) {
       <div className='pb-12'>{children}</div>
       <Tabbar labels icons className='left-0 bottom-0 fixed'>
         <TabbarLink
+          component='div'
           active={pathname === "/dashboard"}
           onClick={() => navigate("/dashboard")}
           icon={<IconHome className='w-8 h-8' />}
           label={"Home"}
         />
         <TabbarLink
+          component='div'
           active={pathname === "/rekap"}
           onClick={() => navigate("/rekap")}
           icon={<IconFileChart className='w-8 h-8' />}
           label={"Rekap"}
         />
         <TabbarLink
+          component='div'
           active={pathname === "/setting"}
           onClick={() => navigate("/setting")}
           icon={<IconSettings className='w-8 h-8' />}
