@@ -130,18 +130,18 @@ export default function DashboardPage() {
           <Navbar title='Dashboard' />
           <BlockTitle>Scan Kehadiran</BlockTitle>
           <Block>
-            <div className='max-h-96 max-w-96'>
-              <QRCode
-                fps={10}
-                qrbox={300}
-                aspectRatio={1.0}
-                disableFlip={false}
-                verbose={false}
-                qrCodeSuccessCallback={qrCodeSuccessCallback}
-              />
-            </div>
+            <QRCode
+              fps={10}
+              qrbox={300}
+              aspectRatio={1.0}
+              disableFlip={false}
+              verbose={false}
+              qrCodeSuccessCallback={qrCodeSuccessCallback}
+            />
           </Block>
-          <LatestAttendances />
+          <div className='mt-5'>
+            <LatestAttendances />
+          </div>
         </WithNavbar>
       </Page>
 

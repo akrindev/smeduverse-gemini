@@ -74,7 +74,7 @@ const QRCode = (props: ConfigProps) => {
     };
   }, []);
 
-  return <div id={qrcodeRegionId} />;
+  return <div id={qrcodeRegionId} className='max-h-96 max-w-96' />;
 };
 
 export default QRCode;
