@@ -1,5 +1,5 @@
 import { api } from "@/hooks/auth";
-import { AttendancesResponse } from "@/types/attendances";
+import { Attendance, AttendancesResponse } from "@/types/attendances";
 import { AxiosPromise, AxiosResponse } from "axios";
 import { create } from "zustand";
 
@@ -11,6 +11,12 @@ interface RecapState {
     date?: string,
     rombel_id?: number
   ) => Promise<void>;
+  fetchAttendanceByStudentId: (
+    student_id: string
+  ) => AxiosPromise<{
+    message: string;
+    attendances: Attendance[];
+  }>;
 }
 
 export const useRecap = create<RecapState>((set, get) => ({
@@ -51,6 +57,20 @@ export const useRecap = create<RecapState>((set, get) => ({
           }));
         }
       });
+
+    return res;
+  },
+  // fetch attendance by student_id
+  // it didnt populate the state, but return the response
+  fetchAttendanceByStudentId: async (student_id: string) => {
+    // student id cant be empty
+    if (!student_id) {
+      return;
+    }
+
+    const res: AxiosResponse = await api.get(
+      `/api/attendance/apel/student?student_id=${student_id}`
+    );
 
     return res;
   },
