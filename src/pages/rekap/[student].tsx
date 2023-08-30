@@ -1,7 +1,7 @@
 import Calendar from "@/components/Calendar";
 import KonstaLayouts from "@/components/konsta-layouts";
 import WithNavbar from "@/components/with-navbar";
-import { Block, Navbar, Page } from "konsta/react";
+import { Block, Navbar, NavbarBackLink, Page } from "konsta/react";
 import { useRouter } from "next/router";
 import { GetStaticPaths, GetStaticProps } from "next/types";
 import { useEffect, useState } from "react";
@@ -27,8 +27,11 @@ export default function RekapStudent({ student }) {
     <KonstaLayouts>
       <Page>
         <WithNavbar>
-          <Navbar title={`Rekap ${studentId}`} />
-          <Block>
+          <Navbar
+            title={`Rekap`}
+            left={<NavbarBackLink text='Back' onClick={() => history.back()} />}
+          />
+          <Block strong>
             <Calendar year={year} month={month} />
           </Block>
         </WithNavbar>

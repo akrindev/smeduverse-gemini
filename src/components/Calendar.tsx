@@ -1,3 +1,5 @@
+import { IconChevronLeft, IconChevronRight } from "@tabler/icons-react";
+import { isSameDay } from "date-fns";
 import React, { useState } from "react";
 
 // Define the structure of each date entry
@@ -57,6 +59,8 @@ const Calendar: React.FC<CalendarProps> = ({ year, month, dates = [] }) => {
   // Render the days of the month
   const renderDays = (): JSX.Element[] => {
     const days: JSX.Element[] = [];
+    const currentDate = new Date(year, currentMonth - 1, new Date().getDate()); // Get the current date
+
     let dayCounter = 1;
     let prevMonthDays = new Date(year, currentMonth - 1, 0).getDate();
 
@@ -70,7 +74,7 @@ const Calendar: React.FC<CalendarProps> = ({ year, month, dates = [] }) => {
           week.push(
             <div
               key={`prev-${j}`}
-              className={`py-0.5 rounded relative text-gray-600`}>
+              className={`py-0.5 rounded relative text-gray-400`}>
               {prevMonthDays - startDay + j + 1}
             </div>
           );
@@ -83,6 +87,10 @@ const Calendar: React.FC<CalendarProps> = ({ year, month, dates = [] }) => {
           const dateEntry = dates.find((d) => d.date === dateStr);
           // Get the background color class based on the status
           const statusClass = dateEntry ? getStatusColor(dateEntry.status) : "";
+          const isCurrentDate = isSameDay(
+            currentDate,
+            new Date(year, currentMonth - 1, dayCounter)
+          ); // Check if it's the current date
 
           // Render the day element
           week.push(
@@ -91,9 +99,9 @@ const Calendar: React.FC<CalendarProps> = ({ year, month, dates = [] }) => {
               className={`py-0.5 rounded relative ${
                 j === 6
                   ? "text-red-500"
-                  : j === 5
-                  ? "bg-theme-22"
-                  : "bg-theme-17"
+                  : isCurrentDate
+                  ? "font-bold text-blue-500"
+                  : "text-black"
               } ${statusClass}`}>
               {dayCounter}
             </div>
@@ -104,7 +112,7 @@ const Calendar: React.FC<CalendarProps> = ({ year, month, dates = [] }) => {
           week.push(
             <div
               key={`next-${j}`}
-              className={`py-0.5 rounded relative text-gray-600`}>
+              className={`py-0.5 rounded relative text-gray-400`}>
               {dayCounter - daysInMonth}
             </div>
           );
@@ -141,7 +149,8 @@ const Calendar: React.FC<CalendarProps> = ({ year, month, dates = [] }) => {
     <div className='calendar'>
       <div className='text-xl font-bold mb-4 text-center flex justify-between items-center'>
         <button onClick={goToPreviousMonth} className='text-gray-600'>
-          Previous
+          {/* using chevron */}
+          <IconChevronLeft />
         </button>
         <div>
           {firstDay.toLocaleDateString("id-ID", {
@@ -150,7 +159,7 @@ const Calendar: React.FC<CalendarProps> = ({ year, month, dates = [] }) => {
           })}
         </div>
         <button onClick={goToNextMonth} className='text-gray-600'>
-          Next
+          <IconChevronRight />
         </button>
       </div>
       <div className='grid grid-cols-7 gap-4 mt-5 text-center'>
