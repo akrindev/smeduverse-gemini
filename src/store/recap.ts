@@ -3,21 +3,9 @@ import { AttendancesResponse } from "@/types/attendances";
 import { AxiosPromise, AxiosResponse } from "axios";
 import { create } from "zustand";
 
-interface RecapKehadiran {
-  id: number;
-  student: {
-    fullname: string;
-    nipd: string;
-  };
-  attendance_date: string;
-  rombel: {
-    nama: string;
-  };
-}
-
 // recap state
 interface RecapState {
-  attendances: RecapKehadiran[];
+  attendances: Array<any>;
   fetchAttendances: (
     page?: number,
     date?: string,
@@ -50,6 +38,8 @@ export const useRecap = create<RecapState>((set, get) => ({
             return false;
           }
         );
+        // console
+        console.log("new attendances", newAttendances);
         // if date or rombel_id is not empty, then replace the attendances
         if (date || rombel_id) {
           set((state) => ({

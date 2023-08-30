@@ -2,6 +2,7 @@ import { useRecap } from "@/store/recap";
 import format from "date-fns/format";
 import id from "date-fns/locale/id";
 import { Block, BlockTitle, List, ListItem } from "konsta/react";
+import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
 
 export default function RecapAttendance() {
@@ -12,6 +13,9 @@ export default function RecapAttendance() {
     state.attendances,
     state.fetchAttendances,
   ]);
+
+  // router
+  const router = useRouter();
 
   useEffect(() => {
     fetchAttendances(page);
@@ -39,6 +43,7 @@ export default function RecapAttendance() {
           <ListItem
             key={attendance.id}
             link
+            onClick={() => router.push(`/rekap/${attendance.student_id}`)}
             chevronMaterial={false}
             title={attendance.student.fullname}
             after={attendance.rombel.nama}
