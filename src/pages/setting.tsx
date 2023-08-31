@@ -10,12 +10,15 @@ import {
   Navbar,
   Page,
 } from "konsta/react";
+import { useRouter } from "next/router";
 
 export default function Setting() {
   const { user, logout } = useAuth({
     middleware: "auth",
     redirectIfAuthenticated: "/home",
   });
+
+  const router = useRouter();
 
   console.log(user);
 
@@ -38,6 +41,20 @@ export default function Setting() {
               )}
             </List>
           )}
+          <BlockTitle>Roles</BlockTitle>
+          <List strong>
+            {/* list item with title of ketarunaan and osis ketarunaan */}
+            <ListItem
+              title='Ketarunaan'
+              link
+              onClick={() => router.push("/roles/ketarunaan")}
+            />
+            <ListItem
+              title='OSIS Ketarunaan'
+              link
+              onClick={() => router.push("/roles/osis-ketarunaan")}
+            />
+          </List>
           <List inset strong>
             <ListButton className='k-color-brand-red' onClick={logout}>
               Keluar
