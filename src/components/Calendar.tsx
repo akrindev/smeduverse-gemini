@@ -13,9 +13,10 @@ interface CalendarProps {
   year: number;
   month: number;
   dates?: DateEntry[]; // Optional array of DateEntry
+  onMonthChanged?: (month: number) => void; // Add a callback for when the month changes
 }
 
-const Calendar: React.FC<CalendarProps> = ({ year, month, dates = [] }) => {
+const Calendar: React.FC<CalendarProps> = ({ year, month, dates = [], onMonthChanged }) => {
   // Input validation: Ensure month is between 1 and 12
   if (month < 1 || month > 12) {
     throw new Error("Month must be between 1 and 12.");
@@ -96,13 +97,12 @@ const Calendar: React.FC<CalendarProps> = ({ year, month, dates = [] }) => {
           week.push(
             <div
               key={dayCounter}
-              className={`py-0.5 rounded relative ${
-                j === 6
+              className={`py-0.5 rounded relative ${j === 6
                   ? "text-red-500"
                   : isCurrentDate
-                  ? "font-bold text-blue-500"
-                  : "text-black"
-              } ${statusClass}`}>
+                    ? "font-bold text-blue-500"
+                    : "text-black"
+                } ${statusClass}`}>
               {dayCounter}
             </div>
           );
@@ -136,12 +136,20 @@ const Calendar: React.FC<CalendarProps> = ({ year, month, dates = [] }) => {
 
   // Function to navigate to the previous month
   const goToPreviousMonth = (): void => {
-    setCurrentMonth((prevMonth) => prevMonth - 1);
+    setCurrentMonth((prevMonth) => {
+      const newMonth = prevMonth - 1;
+      onMonthChanged && onMonthChanged(newMonth); // Call the onMonthChanged callback if it exists
+      return newMonth;
+    });
   };
 
   // Function to navigate to the next month
   const goToNextMonth = (): void => {
-    setCurrentMonth((prevMonth) => prevMonth + 1);
+    setCurrentMonth((prevMonth) => {
+      const newMonth = prevMonth + 1;
+      onMonthChanged && onMonthChanged(newMonth); // Call the onMonthChanged callback if it exists
+      return newMonth;
+    });
   };
 
   // Component rendering
@@ -171,3 +179,4 @@ const Calendar: React.FC<CalendarProps> = ({ year, month, dates = [] }) => {
 };
 
 export default Calendar;
+
