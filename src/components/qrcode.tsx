@@ -1,9 +1,10 @@
 import { Html5QrcodeScanner } from "html5-qrcode";
+import { Html5QrcodeScannerConfig } from "html5-qrcode/esm/html5-qrcode-scanner";
 import { useEffect } from "react";
 
 const qrcodeRegionId = "html5qr-code-id-id";
 
-type ConfigProps = {
+interface ConfigProps extends Html5QrcodeScannerConfig {
   fps: number;
   qrbox?: number;
   aspectRatio?: number | undefined;
@@ -11,16 +12,17 @@ type ConfigProps = {
   verbose?: boolean;
   qrCodeSuccessCallback?: (decodedText: string, decodedResult: any) => void;
   qrCodeErrorCallback?: (errorMessage: string) => void;
-};
+}
 
 // Creates the configuration object for Html5QrcodeScanner.
 const createConfig = (props: ConfigProps) => {
   let config: ConfigProps = {
     fps: 25,
-    qrbox: 250,
-    aspectRatio: 1.0,
+    qrbox: 260,
+    aspectRatio: 1,
     disableFlip: false,
     verbose: false,
+    rememberLastUsedCamera: true,
   };
 
   if (props.fps) {
@@ -72,7 +74,7 @@ const QRCode = (props: ConfigProps) => {
     };
   }, []);
 
-  return <div id={qrcodeRegionId} />;
+  return <div id={qrcodeRegionId} className='max-h-96 max-w-96' />;
 };
 
 export default QRCode;

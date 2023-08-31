@@ -1,22 +1,29 @@
-import type { Config } from "tailwindcss";
+// import konstaConfig config
 const konstaConfig = require("konsta/config");
 
-const config: Config = {
-  content: [
-    "./src/pages/**/*.{js,ts,jsx,tsx,mdx}",
-    "./src/components/**/*.{js,ts,jsx,tsx,mdx}",
-    "./src/app/**/*.{js,ts,jsx,tsx,mdx}",
-  ],
-  theme: {
-    extend: {
-      backgroundImage: {
-        "gradient-radial": "radial-gradient(var(--tw-gradient-stops))",
-        "gradient-conic":
-          "conic-gradient(from 180deg at 50% 50%, var(--tw-gradient-stops))",
-      },
+// wrap config with konstaConfig config
+module.exports = konstaConfig({
+  konsta: {
+    colors: {
+      primary: "#007aff",
+      "brand-primary": "#007aff",
+      "brand-red": "#ff3b30",
+      "brand-green": "#4cd964",
+      "brand-yellow": "#ffcc00",
+      "brand-purple": "#9c27b0",
+      "brand-blue": "#2196f3",
     },
   },
+  content: [
+    "./src/pages/**/*.{js,ts,jsx,tsx}",
+    "./src/components/**/*.{js,ts,jsx,tsx}",
+  ],
+  darkMode: "class",
+  theme: {
+    extend: {},
+  },
+  variants: {
+    extend: {},
+  },
   plugins: [],
-};
-
-module.exports = konstaConfig(config);
+});
