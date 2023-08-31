@@ -2,14 +2,16 @@ import Calendar from "@/components/Calendar";
 import KonstaLayouts from "@/components/konsta-layouts";
 import WithNavbar from "@/components/with-navbar";
 import { Student, getStudentInformationById } from "@/lib/information";
+import { useAttendance } from "@/store/attendance";
 import { useRecap } from "@/store/recap";
-import { AxiosResponse } from "axios";
 import format from "date-fns/format";
 import id from "date-fns/locale/id";
-import { Block, BlockTitle, List, ListItem, Navbar, NavbarBackLink, Page, Preloader } from "konsta/react";
+import { Block, BlockTitle, Dialog, DialogButton, List, ListItem, Navbar, NavbarBackLink, Page, Preloader } from "konsta/react";
 import { useRouter } from "next/router";
-import { GetStaticPaths, GetStaticProps } from "next/types";
 import { useEffect, useState } from "react";
+import Lottie from "react-lottie";
+import success from "../../assets/success.json";
+import Head from "next/head";
 
 // it is a page that displays the attendance of a student
 export default function RekapStudent({ student }) {
@@ -24,6 +26,28 @@ export default function RekapStudent({ student }) {
   // baseStudent state
   const [baseStudent, setBaseStudent] = useState<Student | null>(null);
 
+  // state for dialog
+  const [dialogOpened, setDialogOpened] = useState(false);
+  // state for selected id
+  const [selectedId, setSelectedId] = useState<number | null>(null);
+  // state for count down item clicked
+  const [countDownItemClicked, setCountDownItemClicked] = useState(0);
+  // state for isLoading
+  const [isLoading, setIsLoading] = useState(false);
+  // state for deleted successful
+  const [deletedSuccessful, setDeletedSuccessful] = useState(false);
+
+  const successOptions = {
+    loop: true,
+    autoplay: true,
+    animationData: success,
+    rendererSettings: {
+      preserveAspectRatio: "xMidYMid slice",
+    },
+  };
+
+  const deleteAttendance = useAttendance((state) => state.deleteAttendance);
+
   const router = useRouter();
   const fetchAttendanceByStudentId = useRecap(
     (state) => state.fetchAttendanceByStudentId
@@ -31,9 +55,50 @@ export default function RekapStudent({ student }) {
 
   const { student: studentId } = router.query as { student: string };
 
-  if (!studentId) {
+  if (router.isReady && !studentId) {
     router.push("/rekap");
   }
+
+  const onItemClicked = (id: number) => {
+    setDialogOpened(true);
+    // setToastLeftOpened(true);
+    setSelectedId(id);
+    setCountDownItemClicked(5);
+  };
+
+  // confirmed delete
+  const onConfirmedDelete = () => {
+    const successSound = new Audio("/sounds/eventually.ogg");
+
+    setIsLoading(true);
+    deleteAttendance(selectedId!).finally(() => {
+      setDialogOpened(false);
+      // setToastLeftOpened(true);
+      setSelectedId(null);
+      setIsLoading(false);
+      setDeletedSuccessful(true);
+
+      // play sound
+      successSound.play();
+
+      setTimeout(() => {
+        setDeletedSuccessful(false);
+      }, 3000);
+
+      const newResults = results.filter(item => item.id !== selectedId);
+      setResults(newResults);
+
+    });
+  };
+
+  // use effect to handle count down
+  useEffect(() => {
+    if (countDownItemClicked === 0) return;
+    const interval = setInterval(() => {
+      setCountDownItemClicked((prev) => prev - 1);
+    }, 1000);
+    return () => clearInterval(interval);
+  }, [countDownItemClicked]);
 
   useEffect(() => {
     const populatedDates = results.map((result) => ({
@@ -68,6 +133,9 @@ export default function RekapStudent({ student }) {
 
   return (
     <KonstaLayouts>
+      <Head>
+        <title>Rekap</title>
+      </Head>
       <Page>
         <WithNavbar>
           <Navbar
@@ -123,6 +191,7 @@ export default function RekapStudent({ student }) {
                     { locale: id })
                   }
                   after={result.rombel.nama}
+                  onClick={() => onItemClicked(result.id)}
                 />
               ))}
             </List>
@@ -133,6 +202,48 @@ export default function RekapStudent({ student }) {
           )}
         </WithNavbar>
       </Page>
+
+      {/* dialog to confirm delete */}
+      <Dialog
+        opened={dialogOpened}
+        onBackdropClick={() => setDialogOpened(false)}
+        title='Hapus kehadiran ini?'
+        content='Kehadiran akan dihapus'
+        buttons={[
+          <DialogButton
+            tabIndex={1}
+            key='cancel'
+            onClick={() => setDialogOpened(false)}>
+            Batal
+          </DialogButton>,
+          <DialogButton
+            tabIndex={2}
+            key='delete'
+            className='k-color-brand-red'
+            onClick={onConfirmedDelete}
+            disabled={countDownItemClicked > 0 || isLoading}>
+            {isLoading ? (
+              <Preloader />
+            ) : (
+              `Hapus ${countDownItemClicked > 0
+                ? "(" + countDownItemClicked + "d)"
+                : ""
+              }`
+            )}
+          </DialogButton>,
+        ]}
+      />
+
+      {/* dialog alert */}
+      <Dialog
+        opened={deletedSuccessful}
+        onBackdropClick={() => setDeletedSuccessful(false)}
+        title={
+          <Lottie options={successOptions} speed={1} height={120} width={120} />
+        }
+        content={"Kehadiran berhasil dihapus"}
+      />
     </KonstaLayouts>
   );
 }
+
