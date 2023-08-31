@@ -14,20 +14,22 @@ interface CalendarProps {
   month: number;
   dates?: DateEntry[]; // Optional array of DateEntry
   onMonthChanged?: (month: number) => void; // Add a callback for when the month changes
+  onYearChanged?: (year: number) => void; // Add a callback for when the year changes
 }
 
-const Calendar: React.FC<CalendarProps> = ({ year, month, dates = [], onMonthChanged }) => {
+const Calendar: React.FC<CalendarProps> = ({ year, month, dates = [], onMonthChanged, onYearChanged }) => {
   // Input validation: Ensure month is between 1 and 12
   if (month < 1 || month > 12) {
     throw new Error("Month must be between 1 and 12.");
   }
 
-  // State to keep track of the current month being displayed
+  // State to keep track of the current month and year being displayed
   const [currentMonth, setCurrentMonth] = useState(month);
+  const [currentYear, setCurrentYear] = useState(year);
 
   // Calculate important date values
-  const firstDay = new Date(year, currentMonth - 1, 1);
-  const lastDay = new Date(year, currentMonth, 0);
+  const firstDay = new Date(currentYear, currentMonth - 1, 1);
+  const lastDay = new Date(currentYear, currentMonth, 0);
   const daysInMonth = lastDay.getDate();
   const startDay = firstDay.getDay();
 
@@ -60,10 +62,10 @@ const Calendar: React.FC<CalendarProps> = ({ year, month, dates = [], onMonthCha
   // Render the days of the month
   const renderDays = (): JSX.Element[] => {
     const days: JSX.Element[] = [];
-    const currentDate = new Date(year, currentMonth - 1, new Date().getDate()); // Get the current date
+    const currentDate = new Date(currentYear, currentMonth - 1, new Date().getDate()); // Get the current date
 
     let dayCounter = 1;
-    let prevMonthDays = new Date(year, currentMonth - 1, 0).getDate();
+    let prevMonthDays = new Date(currentYear, currentMonth - 1, 0).getDate();
 
     // Loop through each week (rows)
     for (let i = 0; i < 6; i++) {
@@ -81,7 +83,7 @@ const Calendar: React.FC<CalendarProps> = ({ year, month, dates = [], onMonthCha
           );
         } else if (dayCounter <= daysInMonth) {
           // Calculate the date string in the format 'YYYY-MM-DD'
-          const dateStr = `${year}-${currentMonth
+          const dateStr = `${currentYear}-${currentMonth
             .toString()
             .padStart(2, "0")}-${dayCounter.toString().padStart(2, "0")}`;
           // Find a matching date entry from the dates prop
@@ -90,7 +92,7 @@ const Calendar: React.FC<CalendarProps> = ({ year, month, dates = [], onMonthCha
           const statusClass = dateEntry ? getStatusColor(dateEntry.status) : "";
           const isCurrentDate = isSameDay(
             currentDate,
-            new Date(year, currentMonth - 1, dayCounter)
+            new Date(currentYear, currentMonth - 1, dayCounter)
           ); // Check if it's the current date
 
           // Render the day element
@@ -98,10 +100,10 @@ const Calendar: React.FC<CalendarProps> = ({ year, month, dates = [], onMonthCha
             <div
               key={dayCounter}
               className={`py-0.5 rounded relative ${j === 6
-                  ? "text-red-500"
-                  : isCurrentDate
-                    ? "font-bold text-blue-500"
-                    : "text-black"
+                ? "text-red-500"
+                : isCurrentDate
+                  ? "font-bold text-blue-500"
+                  : "text-black"
                 } ${statusClass}`}>
               {dayCounter}
             </div>
@@ -134,20 +136,34 @@ const Calendar: React.FC<CalendarProps> = ({ year, month, dates = [], onMonthCha
     return days;
   };
 
-  // Function to navigate to the previous month
+  // Fungsi untuk navigasi ke bulan sebelumnya
   const goToPreviousMonth = (): void => {
     setCurrentMonth((prevMonth) => {
-      const newMonth = prevMonth - 1;
-      onMonthChanged && onMonthChanged(newMonth); // Call the onMonthChanged callback if it exists
+      let newMonth = prevMonth - 1;
+      let newYear = currentYear;
+      if (newMonth < 1) {
+        newMonth = 12; // Jika bulan kurang dari 1, set ke Desember
+        newYear = currentYear - 1; // Jika bulan kurang dari 1, set tahun ke tahun sebelumnya
+      }
+      onMonthChanged && onMonthChanged(newMonth); // Panggil callback onMonthChanged jika ada
+      onYearChanged && onYearChanged(newYear); // Panggil callback onYearChanged jika ada
+      setCurrentYear(newYear); // Set tahun ke tahun baru
       return newMonth;
     });
   };
 
-  // Function to navigate to the next month
+  // Fungsi untuk navigasi ke bulan berikutnya
   const goToNextMonth = (): void => {
     setCurrentMonth((prevMonth) => {
-      const newMonth = prevMonth + 1;
-      onMonthChanged && onMonthChanged(newMonth); // Call the onMonthChanged callback if it exists
+      let newMonth = prevMonth + 1;
+      let newYear = currentYear;
+      if (newMonth > 12) {
+        newMonth = 1; // Jika bulan lebih dari 12, set ke Januari
+        newYear = currentYear + 1; // Jika bulan lebih dari 12, set tahun ke tahun berikutnya
+      }
+      onMonthChanged && onMonthChanged(newMonth); // Panggil callback onMonthChanged jika ada
+      onYearChanged && onYearChanged(newYear); // Panggil callback onYearChanged jika ada
+      setCurrentYear(newYear); // Set tahun ke tahun baru
       return newMonth;
     });
   };
@@ -179,4 +195,5 @@ const Calendar: React.FC<CalendarProps> = ({ year, month, dates = [], onMonthCha
 };
 
 export default Calendar;
+
 

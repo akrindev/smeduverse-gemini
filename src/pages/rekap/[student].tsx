@@ -31,6 +31,10 @@ export default function RekapStudent({ student }) {
 
   const { student: studentId } = router.query as { student: string };
 
+  if (!studentId) {
+    router.push("/rekap");
+  }
+
   useEffect(() => {
     const populatedDates = results.map((result) => ({
       date: format(new Date(result.attendance_date), 'yyyy-MM-dd'),
@@ -42,28 +46,25 @@ export default function RekapStudent({ student }) {
 
   }, [results]);
 
-  //   fetch attendance by student id
   useEffect(() => {
-    if (!studentId) {
-      router.push("/rekap");
-    }
+    fetchAttendanceByStudentId(studentId, month, year)
+      .then((res) => {
+        if (res.status === 200) setResults(res.data.attendances);
+      })
+      .catch((err) => {
+        console.error("error fetchAttendanceByStudentId", err);
+      });
+  }, [studentId, month, year]);
 
-    fetchAttendanceByStudentId(studentId).then((res) => {
-      // console.log("fetching res", res);
-      if (res.status === 200) setResults(res.data.attendances);
-      // console.log("fetching", res.data.attendances);
-    }).catch((err) => {
-      console.log("error", err);
-    });
 
+  useEffect(() => {
     getStudentInformationById(studentId).then((res) => {
-      console.log("student", res.data);
+      // console.log("student", res.data);
       if (res.status === 200) setBaseStudent(res.data);
     }).catch((err) => {
-      console.log("error", err);
+      console.log("error getStudentInformationById", err);
     });
-
-  }, [studentId, fetchAttendanceByStudentId, getStudentInformationById, setBaseStudent]);
+  }, [studentId]);
 
   return (
     <KonstaLayouts>
@@ -100,23 +101,36 @@ export default function RekapStudent({ student }) {
           )}
 
           <Block strong>
-            <Calendar year={year} month={month} dates={populatedDates} />
+            <Calendar
+              year={year}
+              month={month}
+              onMonthChanged={(month) => setMonth(month)}
+              onYearChanged={(year) => setYear(year)}
+              dates={populatedDates}
+            />
           </Block>
           <BlockTitle>Kehadiran Bulanan</BlockTitle>
-          <List strong>
-            {results.map((result) => (
-              <ListItem
-                key={result.id}
-                link
-                title={format(
-                  new Date(result.attendance_date),
-                  "HH:mm | EEE, dd MMM",
-                  { locale: id })
-                }
-                after={result.rombel.nama}
-              />
-            ))}
-          </List>
+
+          {results.length > 0 ? (
+            <List strong>
+              {results.map((result) => (
+                <ListItem
+                  key={result.id}
+                  link
+                  title={format(
+                    new Date(result.attendance_date),
+                    "HH:mm | EEE, dd MMM",
+                    { locale: id })
+                  }
+                  after={result.rombel.nama}
+                />
+              ))}
+            </List>
+          ) : (
+            <Block strong>
+              <p>Tidak ada data kehadiran.</p>
+            </Block>
+          )}
         </WithNavbar>
       </Page>
     </KonstaLayouts>

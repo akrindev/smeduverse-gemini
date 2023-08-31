@@ -12,7 +12,9 @@ interface RecapState {
     rombel_id?: number
   ) => Promise<void>;
   fetchAttendanceByStudentId: (
-    student_id: string
+    student_id: string,
+    month?: number,
+    year?: number
   ) => AxiosPromise<{
     message: string;
     attendances: Attendance[];
@@ -62,14 +64,20 @@ export const useRecap = create<RecapState>((set, get) => ({
   },
   // fetch attendance by student_id
   // it didnt populate the state, but return the response
-  fetchAttendanceByStudentId: async (student_id: string) => {
-    // student id cant be empty
+  fetchAttendanceByStudentId: async (student_id: string, month?: number, year?: number) => {
+    // student_id tidak boleh kosong
     if (!student_id) {
       return;
     }
 
+    const params = new URLSearchParams({
+      student_id: student_id,
+      month: month?.toString() || "",
+      year: year?.toString() || "",
+    });
+
     const res: AxiosResponse = await api.get(
-      `/api/attendance/apel/student?student_id=${student_id}`
+      `/api/attendance/apel/student?${params}`
     );
 
     return res;
