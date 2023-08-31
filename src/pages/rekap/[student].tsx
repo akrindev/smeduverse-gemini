@@ -6,7 +6,7 @@ import { useRecap } from "@/store/recap";
 import { AxiosResponse } from "axios";
 import format from "date-fns/format";
 import id from "date-fns/locale/id";
-import { Block, BlockTitle, List, ListItem, Navbar, NavbarBackLink, Page } from "konsta/react";
+import { Block, BlockTitle, List, ListItem, Navbar, NavbarBackLink, Page, Preloader } from "konsta/react";
 import { useRouter } from "next/router";
 import { GetStaticPaths, GetStaticProps } from "next/types";
 import { useEffect, useState } from "react";
@@ -74,25 +74,30 @@ export default function RekapStudent({ student }) {
             left={<NavbarBackLink text='Back' onClick={() => history.back()} />}
           />
 
-          <List strong>
-            <ListItem
-              header='Nama'
-              title={baseStudent?.fullname}
-            />
-            <ListItem
-              header='NIS'
-              title={baseStudent?.nipd}
-            />
-            <ListItem
-              header='Kelas'
-              title={baseStudent?.rombel_aktif[0]?.nama}
-            />
-            <ListItem
-              header='Tempat, Tanggal Lahir'
-            // title={`${baseStudent?.tempat_lahir}, ${format(new Date(baseStudent?.tanggal_lahir), 'dd-MMMM-yyyy')}`}
-            />
-          </List>
-
+          {baseStudent ? (
+            <List strong>
+              <ListItem
+                header='Nama'
+                title={baseStudent?.fullname}
+              />
+              <ListItem
+                header='NIS'
+                title={baseStudent?.nipd}
+              />
+              <ListItem
+                header='Kelas'
+                title={baseStudent?.rombel_aktif[0]?.nama}
+              />
+              <ListItem
+                header='Tempat, Tanggal Lahir'
+                title={`${baseStudent?.tempat_lahir}, ${format(new Date(baseStudent?.tanggal_lahir), 'dd-MMMM-yyyy')}`}
+              />
+            </List>
+          ) : (
+            <Block strong>
+              <Preloader />
+            </Block>
+          )}
 
           <Block strong>
             <Calendar year={year} month={month} dates={populatedDates} />
