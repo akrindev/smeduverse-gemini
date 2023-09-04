@@ -37,9 +37,26 @@ export default function RolePage() {
 
     const { role } = router.query as { role: string | 'ketarunaan' | 'osis-ketarunaan' }
 
-    if (!role) {
-        return 'loading...'
-    }
+    useEffect(() => {
+        // console.log('user', user)
+        if (role) getRoles(role).then((item) => setRoles(item))
+    }, [role])
+
+    useEffect(() => {
+        if (alertOpened) {
+            setTimeout(() => {
+                setAlertOpened(false)
+            }, 3000)
+        }
+    }, [alertOpened])
+
+    useEffect(() => {
+        if (countDownItemClicked === 0) return;
+        const interval = setInterval(() => {
+            setCountDownItemClicked((prev) => prev - 1);
+        }, 1000);
+        return () => clearInterval(interval);
+    }, [countDownItemClicked]);
 
     const onConfirmedDelete = () => {
         // set loading to true
@@ -99,28 +116,9 @@ export default function RolePage() {
         }
     }
 
-    useEffect(() => {
-        console.log('user', user)
-        if (role) getRoles(role).then((item) => setRoles(item))
-    }, [role])
-
-    // use effect wherever alert open then close it after 3 seconds
-    useEffect(() => {
-        if (alertOpened) {
-            setTimeout(() => {
-                setAlertOpened(false)
-            }, 3000)
-        }
-    }, [alertOpened])
-
-    // use effect to handle count down
-    useEffect(() => {
-        if (countDownItemClicked === 0) return;
-        const interval = setInterval(() => {
-            setCountDownItemClicked((prev) => prev - 1);
-        }, 1000);
-        return () => clearInterval(interval);
-    }, [countDownItemClicked]);
+    if (!role) {
+        return 'loading...'
+    }
 
     return <KonstaLayouts>
         <Head>
