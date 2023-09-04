@@ -37,6 +37,10 @@ export default function RolePage() {
 
     const { role } = router.query as { role: string | 'ketarunaan' | 'osis-ketarunaan' }
 
+    if (!role) {
+        return 'loading...'
+    }
+
     const onConfirmedDelete = () => {
         // set loading to true
         setIsLoading(true)
