@@ -3,14 +3,13 @@ import WithNavbar from "@/components/with-navbar";
 import { useAuth } from "@/hooks/auth";
 import { getIdentity } from "@/lib/identity";
 import { Roles, assignRole, getRoles } from "@/lib/roles";
-import { Block, BlockTitle, List, ListButton, ListInput, ListItem, Navbar, NavbarBackLink, Page, Preloader, Searchbar } from "konsta/react";
+import { BlockTitle, Dialog, List, ListButton, ListInput, ListItem, Navbar, NavbarBackLink, Page, Preloader } from "konsta/react";
 import Head from "next/head";
 import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
 
 export default function RolePage() {
     const router = useRouter()
-    const [searchQuery, setSearchQuery] = useState("");
     const [roles, setRoles] = useState<Roles[]>([])
     const [identity, setIdentity] = useState<Roles>(null)
     const [identityId, setIdentityId] = useState("")
@@ -18,24 +17,16 @@ export default function RolePage() {
     const [identityLoading, setIdentityLoading] = useState(false)
     const [loadingAssignRole, setLoadingAssignRole] = useState(false)
 
+    const [alertOpened, setAlertOpened] = useState(false)
+    const [alertTitle, setAlertTitle] = useState("")
+    const [alertContent, setAlertContent] = useState("")
+
     const { user } = useAuth({
         middleware: "auth",
         redirectIfAuthenticated: "/dashboard",
     })
 
     const { role } = router.query as { role: string | 'ketarunaan' | 'osis-ketarunaan' }
-
-    const handleSearch = (event) => {
-        setSearchQuery(event.target.value);
-    };
-
-    const handleClear = () => {
-        setSearchQuery("");
-    };
-
-    const handleDisable = () => {
-        console.log("Searchbar disabled");
-    };
 
     const onRoleClicked = (item) => {
         if (user && user.data.identity.niy === item.identity.niy) {
@@ -50,14 +41,24 @@ export default function RolePage() {
         getIdentity(role === 'ketarunaan' ? 'teacher' : 'student', identityId).then((item) => {
             setIdentity(item)
             console.log(item)
-        }).finally(() => setIdentityLoading(false))
+        })
+            .catch((err) => {
+                console.error('eerrroooz', err)
+
+            })
+            .finally(() => setIdentityLoading(false))
     }
 
     const onAssignRole = () => {
         setLoadingAssignRole(true)
         const initRole = role.replace('-', ' ') as 'ketarunaan' | 'osis ketarunaan'
         if (role && identity) {
-            assignRole(initRole, identity.id).finally(() => {
+            assignRole(initRole, identity.id).then(() => {
+                // alert that user has been assigned
+                setAlertOpened(true)
+                setAlertTitle('Berhasil')
+                setAlertContent(`Berhasil menambahkan ${identity.identity.fullname}`)
+            }).finally(() => {
                 getRoles(role).then((item) => setRoles(item))
                 setLoadingAssignRole(false)
                 setIdentity(null)
@@ -70,6 +71,15 @@ export default function RolePage() {
         console.log('user', user)
         if (role) getRoles(role).then((item) => setRoles(item))
     }, [role])
+
+    // use effect wherever alert open then close it after 3 seconds
+    useEffect(() => {
+        if (alertOpened) {
+            setTimeout(() => {
+                setAlertOpened(false)
+            }, 3000)
+        }
+    }, [alertOpened])
 
     return <KonstaLayouts>
         <Head>
@@ -136,5 +146,13 @@ export default function RolePage() {
                 </List>
             </WithNavbar>
         </Page>
+
+        {/* alert dialog */}
+        <Dialog
+            opened={alertOpened}
+            onBackdropClick={() => setAlertOpened(false)}
+            title={alertTitle}
+            content={alertContent}
+        />
     </KonstaLayouts>
 }
