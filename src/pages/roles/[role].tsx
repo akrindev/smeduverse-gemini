@@ -132,7 +132,7 @@ export default function RolePage() {
                 {/* end of information */}
 
                 <BlockTitle>
-                    Roles {role}
+                    Roles {role.replace('-', ' ').replace(/\b\w/g, c => c.toUpperCase())}
                 </BlockTitle>
                 <List inset strong>
                     {user && roles.map((item) => (
