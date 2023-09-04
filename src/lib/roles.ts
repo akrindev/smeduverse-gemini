@@ -54,3 +54,16 @@ export const assignRole = async (role: 'ketarunaan' | 'osis ketarunaan', userId:
 
     return res
 }
+
+export const removeRole = async (role: string | 'ketarunaan' | 'osis ketarunaan', userId: string) => {
+    const res = await api.delete('/api/roles/gemini/remove', {
+        data: {
+            user_id: userId,
+            role: role.replace('-', ' ')
+        }
+    })
+
+    console.log('deleted', res)
+
+    return res
+}
