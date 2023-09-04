@@ -10,6 +10,7 @@ import {
   Navbar,
   Page,
 } from "konsta/react";
+import Head from "next/head";
 import { useRouter } from "next/router";
 
 export default function Setting() {
@@ -24,6 +25,9 @@ export default function Setting() {
 
   return (
     <KonstaLayouts>
+      <Head>
+        <title>Setting</title>
+      </Head>
       <Page>
         <Navbar title='Setting' />
         <WithNavbar>
