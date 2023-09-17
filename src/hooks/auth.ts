@@ -74,12 +74,12 @@ const useAuth = ({
         localStorage.setItem("token", res.data.token);
         mutate(res.data.user);
 
-        console.log("response", res.data);
+        // console.log("response", res.data);
         setStatus("idle");
       })
       .catch((error) => {
-        console.log(error);
-        console.log(error.message);
+        // console.log(error);
+        // console.log(error.message);
         // if (error.response?.status != 422) throw error;
 
         if (error.response?.status == 403) {

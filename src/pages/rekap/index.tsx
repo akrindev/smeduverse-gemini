@@ -38,7 +38,7 @@ export default function RekapPage() {
 
     // fetch attendances
     fetchAttendances(1, selectedDate, rombel?.id);
-    console.log(rombel);
+    // console.log(rombel);
   };
 
   // on selected date

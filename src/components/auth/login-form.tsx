@@ -31,7 +31,7 @@ export default function LoginForm() {
   const [alertOpened, setAlertOpened] = useState(false);
 
   useEffect(() => {
-    console.log("error", status);
+    // console.log("error", status);
     if (status === "error") {
       setAlertOpened(true);
     }
@@ -43,9 +43,9 @@ export default function LoginForm() {
       <List strongIos insetIos>
         <ListInput
           outline
-          label='NIS / NIY / Email'
-          type='text'
-          placeholder='Identitas Kamu'
+          label="NIS / NIY / Email"
+          type="text"
+          placeholder="Identitas Kamu"
           onChange={(event: ChangeEvent<HTMLInputElement>) =>
             setEmail(event.target.value)
           }
@@ -53,9 +53,9 @@ export default function LoginForm() {
 
         <ListInput
           outline
-          label='Password'
-          type='password'
-          placeholder='Password'
+          label="Password"
+          type="password"
+          placeholder="Password"
           onChange={(event: ChangeEvent<HTMLInputElement>) =>
             setPassword(event.target.value)
           }
@@ -70,7 +70,7 @@ export default function LoginForm() {
       <Dialog
         opened={alertOpened}
         onBackdropClick={() => setAlertOpened(false)}
-        title='Akses Ditolak'
+        title="Akses Ditolak"
         content={errors ? errors : "Terjadi kesalahan saat login"}
         buttons={
           <DialogButton onClick={() => setAlertOpened(false)}>Ok</DialogButton>

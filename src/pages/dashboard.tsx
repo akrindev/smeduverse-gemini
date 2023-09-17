@@ -47,7 +47,7 @@ export default function DashboardPage() {
 
   // Callback function for successful QR code scan
   const qrCodeSuccessCallback = (qrCodeMessage: string) => {
-    console.log("scanned", qrCodeMessage);
+    // console.log("scanned", qrCodeMessage);
     setIsError(false);
 
     // Updating results

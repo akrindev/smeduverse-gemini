@@ -19,7 +19,9 @@ export default function RekapRombel() {
   const [students, setStudents] = useState([]);
   const [rombel, setRombel] = useState(null);
   const [loading, setLoading] = useState(false);
-  const [selectedDate, setSelectedDate] = useState(format(new Date(), "Y-m-d"));
+  const [selectedDate, setSelectedDate] = useState(
+    format(new Date(), "Y-MM-d")
+  );
   // dialog date
   const [dialogDateOpened, setDialogDateOpened] = useState(false);
 

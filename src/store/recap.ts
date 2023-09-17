@@ -29,7 +29,7 @@ export const useRecap = create<RecapState>((set, get) => ({
     date?: string,
     rombel_id?: number
   ) => {
-    console.log("fetching attendances date", date);
+    // console.log("fetching attendances date", date);
     const params = new URLSearchParams({
       page: page.toString(),
       date: date || "",
@@ -47,7 +47,7 @@ export const useRecap = create<RecapState>((set, get) => ({
           }
         );
         // console
-        console.log("new attendances", newAttendances);
+        // console.log("new attendances", newAttendances);
         // if date or rombel_id is not empty, then replace the attendances
         if (date || rombel_id) {
           set((state) => ({
@@ -64,7 +64,11 @@ export const useRecap = create<RecapState>((set, get) => ({
   },
   // fetch attendance by student_id
   // it didnt populate the state, but return the response
-  fetchAttendanceByStudentId: async (student_id: string, month?: number, year?: number) => {
+  fetchAttendanceByStudentId: async (
+    student_id: string,
+    month?: number,
+    year?: number
+  ) => {
     // student_id tidak boleh kosong
     if (!student_id) {
       return;

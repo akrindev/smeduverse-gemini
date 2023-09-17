@@ -47,6 +47,8 @@ export default function RekapStudent({ student }) {
   const [isLoading, setIsLoading] = useState(false);
   // state for deleted successful
   const [deletedSuccessful, setDeletedSuccessful] = useState(false);
+  // state for on error deleting
+  const [onErrorDeleting, setOnErrorDeleting] = useState(false);
 
   const successOptions = {
     loop: true,
@@ -82,23 +84,33 @@ export default function RekapStudent({ student }) {
     const successSound = new Audio("/sounds/eventually.ogg");
 
     setIsLoading(true);
-    deleteAttendance(selectedId!).finally(() => {
-      setDialogOpened(false);
-      // setToastLeftOpened(true);
-      setSelectedId(null);
-      setIsLoading(false);
-      setDeletedSuccessful(true);
+    deleteAttendance(selectedId!)
+      .then((res) => {
+        if (res.status === 200) {
+          setDialogOpened(false);
+          // setToastLeftOpened(true);
+          setSelectedId(null);
+          setDeletedSuccessful(true);
 
-      // play sound
-      successSound.play();
+          // play sound
+          successSound.play();
 
-      setTimeout(() => {
-        setDeletedSuccessful(false);
-      }, 3000);
+          setTimeout(() => {
+            setDeletedSuccessful(false);
+          }, 3000);
 
-      const newResults = results.filter((item) => item.id !== selectedId);
-      setResults(newResults);
-    });
+          const newResults = results.filter((item) => item.id !== selectedId);
+          setResults(newResults);
+        }
+      })
+      .catch((err) => {
+        console.error("error deleteAttendance", err);
+        setDialogOpened(false);
+        setOnErrorDeleting(true);
+      })
+      .finally(() => {
+        setIsLoading(false);
+      });
   };
 
   // use effect to handle count down
@@ -197,6 +209,7 @@ export default function RekapStudent({ student }) {
                         "HH:mm | EEE, dd MMM",
                         { locale: id }
                       )}
+                      subtitle={"klik untuk menghapus"}
                       after={result.rombel.nama}
                       onClick={() => onItemClicked(result.id)}
                     />
@@ -258,6 +271,22 @@ export default function RekapStudent({ student }) {
           <Lottie options={successOptions} speed={1} height={120} width={120} />
         }
         content={"Kehadiran berhasil dihapus"}
+      />
+      {/* dialog error */}
+      <Dialog
+        opened={onErrorDeleting}
+        onBackdropClick={() => setOnErrorDeleting(false)}
+        title={"Gagal menghapus kehadiran"}
+        content={"Terjadi kesalahan saat menghapus kehadiran"}
+        buttons={[
+          <DialogButton
+            tabIndex={1}
+            key="cancel"
+            onClick={() => setOnErrorDeleting(false)}
+          >
+            Tutup
+          </DialogButton>,
+        ]}
       />
     </KonstaLayouts>
   );

@@ -32,7 +32,7 @@ export default function RekapRombelPage() {
       .finally(() => setLoading(false));
   }, []);
 
-  console.log("rendered", rombels);
+  //   console.log("rendered", rombels);
 
   return (
     <KonstaLayouts>
