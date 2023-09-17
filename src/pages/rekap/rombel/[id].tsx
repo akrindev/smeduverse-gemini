@@ -1,3 +1,4 @@
+import DialogDate from "@/components/dialog-date";
 import KonstaLayouts from "@/components/konsta-layouts";
 import WithNavbar from "@/components/with-navbar";
 import { api } from "@/hooks/auth";
@@ -18,6 +19,9 @@ export default function RekapRombel() {
   const [students, setStudents] = useState([]);
   const [rombel, setRombel] = useState(null);
   const [loading, setLoading] = useState(false);
+  const [selectedDate, setSelectedDate] = useState(format(new Date(), "Y-m-d"));
+  // dialog date
+  const [dialogDateOpened, setDialogDateOpened] = useState(false);
 
   const router = useRouter();
 
@@ -29,12 +33,17 @@ export default function RekapRombel() {
     }
     return count;
   }, 0);
+  // on selected date
+  const onSelectedDate = (date: any) => {
+    setSelectedDate(date);
+    setDialogDateOpened(false);
+  };
 
   useEffect(() => {
     if (id) {
       setLoading(true);
       api
-        .get(`/orbit/api/rekap/rombel?rombel_id=${id}&date=2023-08-28`)
+        .get(`/orbit/api/rekap/rombel?rombel_id=${id}&date=${selectedDate}`)
         .then((res) => {
           if (res.status === 200) {
             const { anggota_rombel, ...rombel } = res.data;
@@ -45,7 +54,7 @@ export default function RekapRombel() {
         .catch((error) => console.error(error))
         .finally(() => setLoading(false));
     }
-  }, [id]);
+  }, [id, selectedDate]);
 
   return (
     <KonstaLayouts>
@@ -63,6 +72,13 @@ export default function RekapRombel() {
             <>
               {rombel && (
                 <List strong>
+                  <ListItem
+                    link
+                    title="Tanggal"
+                    subtitle="klik untuk memilih tanggal"
+                    after={selectedDate ? selectedDate : ""}
+                    onClick={() => setDialogDateOpened(true)}
+                  />
                   <ListItem header={"Rombel"} title={rombel.nama} />
                   <ListItem
                     header={"Kompetensi Keahlian"}
@@ -116,6 +132,7 @@ export default function RekapRombel() {
           )}
         </WithNavbar>
       </Page>
+      <DialogDate opened={dialogDateOpened} onDateSelect={onSelectedDate} />
     </KonstaLayouts>
   );
 }
