@@ -46,7 +46,7 @@ export default function DashboardPage() {
   };
 
   // Callback function for successful QR code scan
-  const qrCodeSuccessCallback = debounce((qrCodeMessage: string) => {
+  const qrCodeSuccessCallback = (qrCodeMessage: string) => {
     console.log("scanned", qrCodeMessage);
     setIsError(false);
 
@@ -72,7 +72,7 @@ export default function DashboardPage() {
           setIsError(true);
         });
     }
-  }, 1000);
+  };
 
   // Effect to remove last scanned QR code after 3 seconds
   useEffect(() => {
