@@ -46,8 +46,8 @@ export default function DashboardPage() {
   };
 
   // Callback function for successful QR code scan
-  const qrCodeSuccessCallback = debounce((qrCodeMessage: string) => {
-    console.log("scanned", qrCodeMessage);
+  const qrCodeSuccessCallback = (qrCodeMessage: string) => {
+    // console.log("scanned", qrCodeMessage);
     setIsError(false);
 
     // Updating results
@@ -72,7 +72,7 @@ export default function DashboardPage() {
           setIsError(true);
         });
     }
-  }, 1000);
+  };
 
   // Effect to remove last scanned QR code after 3 seconds
   useEffect(() => {
@@ -127,7 +127,7 @@ export default function DashboardPage() {
       </Head>
       <Page>
         <WithNavbar>
-          <Navbar title='Dashboard' />
+          <Navbar title="Dashboard" />
           <BlockTitle>Scan Kehadiran</BlockTitle>
           <Block>
             <QRCode
@@ -139,7 +139,7 @@ export default function DashboardPage() {
               qrCodeSuccessCallback={qrCodeSuccessCallback}
             />
           </Block>
-          <div className='mt-5'>
+          <div className="mt-5">
             <LatestAttendances />
           </div>
         </WithNavbar>

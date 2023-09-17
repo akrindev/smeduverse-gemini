@@ -9,7 +9,7 @@
     "lint": "next lint"
   },
   "dependencies": {
-    "@tabler/icons-react": "^2.32.0",
+    "@tabler/icons-react": "^2.34.0",
     "autoprefixer": "10.4.14",
     "axios": "^1.5.0",
     "date-fns": "^2.30.0",
@@ -28,9 +28,12 @@
     "zustand": "^4.4.1"
   },
   "devDependencies": {
+    "@commitlint/cli": "^17.7.1",
+    "@commitlint/config-conventional": "^17.7.0",
     "@types/node": "20.4.9",
     "@types/react": "18.2.20",
     "@types/react-dom": "18.2.7",
-    "@types/react-lottie": "^1.2.6"
+    "@types/react-lottie": "^1.2.6",
+    "husky": "^8.0.3"
   }
 }

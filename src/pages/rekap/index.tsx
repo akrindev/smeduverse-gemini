@@ -8,6 +8,7 @@ import DialogDate from "@/components/dialog-date";
 import RecapAttendance from "@/components/recap/attendances";
 import { useRecap } from "@/store/recap";
 import format from "date-fns/format";
+import { useRouter } from "next/router";
 
 export default function RekapPage() {
   const [date, setDate] = useState("");
@@ -23,6 +24,8 @@ export default function RekapPage() {
   // fetch attendances
   const fetchAttendances = useRecap((state) => state.fetchAttendances);
 
+  const router = useRouter();
+
   // on selecting rombel
   const onSelectingRombel = () => {
     setDialogRombelOpened(true);
@@ -35,7 +38,7 @@ export default function RekapPage() {
 
     // fetch attendances
     fetchAttendances(1, selectedDate, rombel?.id);
-    console.log(rombel);
+    // console.log(rombel);
   };
 
   // on selected date
@@ -55,19 +58,28 @@ export default function RekapPage() {
     <KonstaLayouts>
       <Page>
         <WithNavbar>
-          <Navbar title='Rekap Kehadiran' />
+          <Navbar title="Rekap" />
+          {/* <BlockTitle>Pilih Rekap</BlockTitle> */}
+          <List strong>
+            <ListItem
+              link
+              title="Rekap Per Kelas"
+              onClick={() => router.push("/rekap/rombel")}
+            />
+          </List>
+          <hr className="border border-t" />
           <BlockTitle>Pilih Rombel dan Tanggal</BlockTitle>
           <Block>
             <List strongIos outlineIos>
               <ListItem
                 link
-                title='Rombel'
+                title="Rombel"
                 after={selectedRombel ? selectedRombel.nama : "All"}
                 onClick={() => setDialogRombelOpened(true)}
               />
               <ListItem
                 link
-                title='Tanggal'
+                title="Tanggal"
                 after={selectedDate ? selectedDate : ""}
                 onClick={() => setDialogDateOpened(true)}
               />

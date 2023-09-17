@@ -21,7 +21,7 @@ export default function Setting() {
 
   const router = useRouter();
 
-  console.log(user);
+  // console.log(user);
 
   return (
     <KonstaLayouts>
@@ -29,19 +29,19 @@ export default function Setting() {
         <title>Setting</title>
       </Head>
       <Page>
-        <Navbar title='Setting' />
+        <Navbar title="Setting" />
         <WithNavbar>
           <BlockTitle>Profile</BlockTitle>
           {user && (
             <List strongIos outlineIos>
               <ListItem
-                header='Nama Lengkap'
+                header="Nama Lengkap"
                 title={user.data.identity.fullname}
               />
               {user.data.teacher! ? (
-                <ListItem header='NIY' title={user.data.identity.niy} />
+                <ListItem header="NIY" title={user.data.identity.niy} />
               ) : (
-                <ListItem header='NIS' title={user.data.identity.nipd} />
+                <ListItem header="NIS" title={user.data.identity.nipd} />
               )}
             </List>
           )}
@@ -49,18 +49,18 @@ export default function Setting() {
           <List strong>
             {/* list item with title of ketarunaan and osis ketarunaan */}
             <ListItem
-              title='Ketarunaan'
+              title="Ketarunaan"
               link
               onClick={() => router.push("/roles/ketarunaan")}
             />
             <ListItem
-              title='OSIS Ketarunaan'
+              title="OSIS Ketarunaan"
               link
               onClick={() => router.push("/roles/osis-ketarunaan")}
             />
           </List>
           <List inset strong>
-            <ListButton className='k-color-brand-red' onClick={logout}>
+            <ListButton className="k-color-brand-red" onClick={logout}>
               Keluar
             </ListButton>
           </List>
