@@ -10,7 +10,7 @@ export default function Document() {
         rel='stylesheet'
       /> */}
       <Head />
-      <body>
+      <body className="mx-auto max-w-4xl">
         <Main />
         <NextScript />
       </body>

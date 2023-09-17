@@ -127,7 +127,7 @@ export default function DashboardPage() {
       </Head>
       <Page>
         <WithNavbar>
-          <Navbar title='Dashboard' />
+          <Navbar title="Dashboard" />
           <BlockTitle>Scan Kehadiran</BlockTitle>
           <Block>
             <QRCode
@@ -139,7 +139,7 @@ export default function DashboardPage() {
               qrCodeSuccessCallback={qrCodeSuccessCallback}
             />
           </Block>
-          <div className='mt-5'>
+          <div className="mt-5">
             <LatestAttendances />
           </div>
         </WithNavbar>
