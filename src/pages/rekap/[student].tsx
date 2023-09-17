@@ -6,7 +6,18 @@ import { useAttendance } from "@/store/attendance";
 import { useRecap } from "@/store/recap";
 import format from "date-fns/format";
 import id from "date-fns/locale/id";
-import { Block, BlockTitle, Dialog, DialogButton, List, ListItem, Navbar, NavbarBackLink, Page, Preloader } from "konsta/react";
+import {
+  Block,
+  BlockTitle,
+  Dialog,
+  DialogButton,
+  List,
+  ListItem,
+  Navbar,
+  NavbarBackLink,
+  Page,
+  Preloader,
+} from "konsta/react";
 import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
 import Lottie from "react-lottie";
@@ -85,9 +96,8 @@ export default function RekapStudent({ student }) {
         setDeletedSuccessful(false);
       }, 3000);
 
-      const newResults = results.filter(item => item.id !== selectedId);
+      const newResults = results.filter((item) => item.id !== selectedId);
       setResults(newResults);
-
     });
   };
 
@@ -102,13 +112,12 @@ export default function RekapStudent({ student }) {
 
   useEffect(() => {
     const populatedDates = results.map((result) => ({
-      date: format(new Date(result.attendance_date), 'yyyy-MM-dd'),
+      date: format(new Date(result.attendance_date), "yyyy-MM-dd"),
       status: "h",
     }));
 
     // set populated dates
     setPopulatedDates(populatedDates);
-
   }, [results]);
 
   useEffect(() => {
@@ -121,14 +130,15 @@ export default function RekapStudent({ student }) {
       });
   }, [studentId, month, year]);
 
-
   useEffect(() => {
-    getStudentInformationById(studentId).then((res) => {
-      // console.log("student", res.data);
-      if (res.status === 200) setBaseStudent(res.data);
-    }).catch((err) => {
-      console.log("error getStudentInformationById", err);
-    });
+    getStudentInformationById(studentId)
+      .then((res) => {
+        // console.log("student", res.data);
+        if (res.status === 200) setBaseStudent(res.data);
+      })
+      .catch((err) => {
+        console.log("error getStudentInformationById", err);
+      });
   }, [studentId]);
 
   return (
@@ -140,64 +150,67 @@ export default function RekapStudent({ student }) {
         <WithNavbar>
           <Navbar
             title={`Rekap`}
-            left={<NavbarBackLink text='Back' onClick={() => history.back()} />}
+            left={<NavbarBackLink text="Back" onClick={() => history.back()} />}
           />
 
           {baseStudent ? (
-            <List strong>
-              <ListItem
-                header='Nama'
-                title={baseStudent?.fullname}
-              />
-              <ListItem
-                header='NIS'
-                title={baseStudent?.nipd}
-              />
-              <ListItem
-                header='Kelas'
-                title={baseStudent?.rombel_aktif[0]?.nama}
-              />
-              <ListItem
-                header='Tempat, Tanggal Lahir'
-                title={`${baseStudent?.tempat_lahir}, ${format(new Date(baseStudent?.tanggal_lahir), 'dd-MMMM-yyyy')}`}
-              />
-            </List>
+            <>
+              <List strong>
+                <ListItem header="Nama" title={baseStudent?.fullname} />
+                <ListItem header="NIS" title={baseStudent?.nipd} />
+                <ListItem
+                  header="Kelas"
+                  title={baseStudent?.rombel_aktif[0]?.nama}
+                />
+                <ListItem
+                  header="Tempat, Tanggal Lahir"
+                  title={`${baseStudent?.tempat_lahir}, ${format(
+                    new Date(baseStudent?.tanggal_lahir),
+                    "dd-MMMM-yyyy"
+                  )}`}
+                />
+                <ListItem
+                  header="Jumlah Kehadiran"
+                  title={populatedDates.length || "0"}
+                />
+              </List>
+
+              <Block strong>
+                <Calendar
+                  year={year}
+                  month={month}
+                  onMonthChanged={(month) => setMonth(month)}
+                  onYearChanged={(year) => setYear(year)}
+                  dates={populatedDates}
+                />
+              </Block>
+              <BlockTitle>Kehadiran Bulanan</BlockTitle>
+
+              {results.length > 0 ? (
+                <List strong>
+                  {results.map((result) => (
+                    <ListItem
+                      key={result.id}
+                      link
+                      title={format(
+                        new Date(result.attendance_date),
+                        "HH:mm | EEE, dd MMM",
+                        { locale: id }
+                      )}
+                      after={result.rombel.nama}
+                      onClick={() => onItemClicked(result.id)}
+                    />
+                  ))}
+                </List>
+              ) : (
+                <Block strong>
+                  <p>Tidak ada data kehadiran.</p>
+                </Block>
+              )}
+            </>
           ) : (
             <Block strong>
               <Preloader />
-            </Block>
-          )}
-
-          <Block strong>
-            <Calendar
-              year={year}
-              month={month}
-              onMonthChanged={(month) => setMonth(month)}
-              onYearChanged={(year) => setYear(year)}
-              dates={populatedDates}
-            />
-          </Block>
-          <BlockTitle>Kehadiran Bulanan</BlockTitle>
-
-          {results.length > 0 ? (
-            <List strong>
-              {results.map((result) => (
-                <ListItem
-                  key={result.id}
-                  link
-                  title={format(
-                    new Date(result.attendance_date),
-                    "HH:mm | EEE, dd MMM",
-                    { locale: id })
-                  }
-                  after={result.rombel.nama}
-                  onClick={() => onItemClicked(result.id)}
-                />
-              ))}
-            </List>
-          ) : (
-            <Block strong>
-              <p>Tidak ada data kehadiran.</p>
             </Block>
           )}
         </WithNavbar>
@@ -207,27 +220,30 @@ export default function RekapStudent({ student }) {
       <Dialog
         opened={dialogOpened}
         onBackdropClick={() => setDialogOpened(false)}
-        title='Hapus kehadiran ini?'
-        content='Kehadiran akan dihapus'
+        title="Hapus kehadiran ini?"
+        content="Kehadiran akan dihapus"
         buttons={[
           <DialogButton
             tabIndex={1}
-            key='cancel'
-            onClick={() => setDialogOpened(false)}>
+            key="cancel"
+            onClick={() => setDialogOpened(false)}
+          >
             Batal
           </DialogButton>,
           <DialogButton
             tabIndex={2}
-            key='delete'
-            className='k-color-brand-red'
+            key="delete"
+            className="k-color-brand-red"
             onClick={onConfirmedDelete}
-            disabled={countDownItemClicked > 0 || isLoading}>
+            disabled={countDownItemClicked > 0 || isLoading}
+          >
             {isLoading ? (
               <Preloader />
             ) : (
-              `Hapus ${countDownItemClicked > 0
-                ? "(" + countDownItemClicked + "d)"
-                : ""
+              `Hapus ${
+                countDownItemClicked > 0
+                  ? "(" + countDownItemClicked + "d)"
+                  : ""
               }`
             )}
           </DialogButton>,
@@ -246,4 +262,3 @@ export default function RekapStudent({ student }) {
     </KonstaLayouts>
   );
 }
-
