@@ -1,23 +1,15 @@
 // Importing necessary libraries and components
 import KonstaLayouts from "@/components/konsta-layouts";
 import QRCode from "@/components/qrcode";
-import {
-  Page,
-  Block,
-  Navbar,
-  Dialog,
-  DialogButton,
-  BlockTitle,
-} from "konsta/react";
+import { Page, Block, Navbar, Dialog, BlockTitle } from "konsta/react";
 import { useEffect, useState } from "react";
 import { api } from "@/hooks/auth";
-import success from "../assets/success.json";
-import error from "../assets/error.json";
 import Lottie from "react-lottie";
 import { useAttendance } from "@/store/attendance";
 import LatestAttendances from "@/components/latest-attendances";
 import Head from "next/head";
 import WithNavbar from "@/components/with-navbar";
+import { successOptions, errorOptions } from "@/lib/lottie-options";
 
 // Main function for the Dashboard page
 export default function DashboardPage() {
@@ -30,20 +22,6 @@ export default function DashboardPage() {
 
   // Function to fetch attendances
   const fetchAttendances = useAttendance((state) => state.fetchAttendances);
-
-  // Debounce function to prevent multiple scans in quick succession
-  const debounce = <T extends (...args: any[]) => void>(
-    func: T,
-    delay: number
-  ) => {
-    let timeoutId: ReturnType<typeof setTimeout>;
-    return (...args: Parameters<T>) => {
-      clearTimeout(timeoutId);
-      timeoutId = setTimeout(() => {
-        func(...args);
-      }, delay);
-    };
-  };
 
   // Callback function for successful QR code scan
   const qrCodeSuccessCallback = (qrCodeMessage: string) => {
@@ -101,24 +79,6 @@ export default function DashboardPage() {
     }
   }, [alertOpened, isError]);
 
-  // Lottie options for animations
-  const errorOptions = {
-    loop: true,
-    autoplay: true,
-    animationData: error,
-    rendererSettings: {
-      preserveAspectRatio: "xMidYMid slice",
-    },
-  };
-  const successOptions = {
-    loop: true,
-    autoplay: true,
-    animationData: success,
-    rendererSettings: {
-      preserveAspectRatio: "xMidYMid slice",
-    },
-  };
-
   // Rendering the Dashboard page
   return (
     <KonstaLayouts>
@@ -127,7 +87,7 @@ export default function DashboardPage() {
       </Head>
       <Page>
         <WithNavbar>
-          <Navbar title="Dashboard" />
+          <Navbar title='Dashboard' />
           <BlockTitle>Scan Kehadiran</BlockTitle>
           <Block>
             <QRCode
@@ -139,7 +99,7 @@ export default function DashboardPage() {
               qrCodeSuccessCallback={qrCodeSuccessCallback}
             />
           </Block>
-          <div className="mt-5">
+          <div className='mt-5'>
             <LatestAttendances />
           </div>
         </WithNavbar>

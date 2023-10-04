@@ -1,5 +1,5 @@
 import useSWR from "swr";
-import Axios, { AxiosError } from "axios";
+import Axios from "axios";
 import { useEffect, useCallback } from "react";
 import { useRouter } from "next/router";
 
@@ -13,7 +13,7 @@ const api = Axios.create({
 
 api.interceptors.request.use(
   (config) => {
-    const token = localStorage.getItem("token");
+    const token = localStorage.getItem("smeduverse-gemini-token");
     if (token) {
       config.headers.Authorization = `Bearer ${token}`;
     }
@@ -26,7 +26,7 @@ api.interceptors.response.use(
   (response) => response,
   (error) => {
     if (error.response.status === 401) {
-      localStorage.removeItem("token");
+      localStorage.removeItem("smeduverse-gemini-token");
       // window.location.pathname = '/'
       return;
     }
@@ -71,7 +71,7 @@ const useAuth = ({
     api
       .post("/assembly-login", props)
       .then((res) => {
-        localStorage.setItem("token", res.data.token);
+        localStorage.setItem("smeduverse-gemini-token", res.data.token);
         mutate(res.data.user);
 
         // console.log("response", res.data);
@@ -94,7 +94,7 @@ const useAuth = ({
 
   const logout = useCallback(() => {
     if (!error) {
-      localStorage.removeItem("token");
+      localStorage.removeItem("smeduverse-gemini-token");
       mutate(null);
     }
 
