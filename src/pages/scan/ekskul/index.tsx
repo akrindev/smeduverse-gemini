@@ -1,8 +1,16 @@
 import KonstaLayouts from "@/components/konsta-layouts";
 import WithNavbar from "@/components/with-navbar";
 import { api } from "@/hooks/auth";
-import { Navbar, NavbarBackLink, Page } from "konsta/react";
+import {
+  BlockTitle,
+  List,
+  ListItem,
+  Navbar,
+  NavbarBackLink,
+  Page,
+} from "konsta/react";
 import Head from "next/head";
+import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
 
 export default function ScanEkskul() {
@@ -18,6 +26,8 @@ export default function ScanEkskul() {
       deleted_at: string;
     }>
   >([]);
+
+  const router = useRouter();
 
   useEffect(() => {
     const fetchEkskul = async () => {
@@ -41,6 +51,23 @@ export default function ScanEkskul() {
             title='Scan Ekskul'
             left={<NavbarBackLink text='Back' onClick={() => history.back()} />}
           />
+
+          {listEkskul.length > 0 && (
+            <>
+              <BlockTitle>List Ekskul</BlockTitle>
+              <List strong inset>
+                {listEkskul.map((ekskul) => (
+                  <ListItem
+                    key={ekskul.id}
+                    title={ekskul.name}
+                    text={ekskul.description}
+                    onClick={() => router.push(`/scan/ekskul/${ekskul.id}`)}
+                    link
+                  />
+                ))}
+              </List>
+            </>
+          )}
         </WithNavbar>
       </Page>
     </KonstaLayouts>
