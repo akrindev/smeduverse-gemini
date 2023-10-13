@@ -42,7 +42,7 @@ export default function DashboardPage() {
         <WithNavbar>
           <Navbar title='Dashboard' />
           <div className='p-5 grid grid-cols-1 gap-3'>
-            {!user.data.external_staff && (
+            {typeof user != "undefined" && !user.data.external_staff && (
               <div
                 className='col-span-1 hover:scale-105 cursor-pointer duration-400'
                 onClick={() => router.push("/scan/apel")}>

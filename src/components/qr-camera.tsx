@@ -34,6 +34,10 @@ export function QrCamera() {
 
   useEffect(() => {
     useQrCamera.getState();
+
+    return () => {
+      useQrCamera.getState();
+    };
   }, []);
 
   return (

@@ -3,15 +3,18 @@ import KonstaLayouts from "@/components/konsta-layouts";
 import Head from "next/head";
 import { Navbar, NavbarBackLink, Page } from "konsta/react";
 import WithNavbar from "@/components/with-navbar";
+import { useEffect } from "react";
 
-const Ekskul: React.FC = () => {
-  const { query, push } = useRouter();
+export default function EkskulPage() {
+  const router = useRouter();
 
-  const { id: ekskulId } = query;
+  const { id: ekskulId } = router.query;
 
-  if (!ekskulId) {
-    push("/scan/ekskul");
-  }
+  useEffect(() => {
+    if (!ekskulId) {
+      router.push("/scan/ekskul");
+    }
+  }, [router, ekskulId]);
 
   return (
     <KonstaLayouts>
@@ -29,6 +32,4 @@ const Ekskul: React.FC = () => {
       </Page>
     </KonstaLayouts>
   );
-};
-
-export default Ekskul;
+}
