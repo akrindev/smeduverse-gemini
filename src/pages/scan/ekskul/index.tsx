@@ -61,7 +61,9 @@ export default function ScanEkskul() {
                     key={ekskul.id}
                     title={ekskul.name}
                     text={ekskul.description}
-                    onClick={() => router.push(`/scan/ekskul/${ekskul.id}`)}
+                    onClick={() =>
+                      router.push(`/scan/ekskul/qr?id=${ekskul.id}`)
+                    }
                     link
                   />
                 ))}
