@@ -4,7 +4,6 @@ import WithNavbar from "@/components/with-navbar";
 import { BlockTitle, Dialog, Navbar, NavbarBackLink, Page } from "konsta/react";
 import Head from "next/head";
 import { QrCamera } from "@/components/qr-camera";
-import { useQrCallback } from "@/hooks/qr-callback";
 import Lottie from "react-lottie";
 
 import { errorOptions, successOptions } from "@/lib/lottie-options";
@@ -12,25 +11,14 @@ import { useQrCamera } from "@/store/qrcamera";
 import { useEffect } from "react";
 
 export default function ScanApel() {
-  const {
-    qrMessage,
-    alertOpened,
-    setMessage,
-    message,
-    isError,
-    setIsError,
-    setAlertOpened,
-    setQrMessage,
-  } = useQrCamera((state) => ({
-    qrMessage: state.qrMessage,
-    alertOpened: state.alertOpened,
-    setMessage: state.setMessage,
-    message: state.message,
-    isError: state.isError,
-    setIsError: state.setIsError,
-    setAlertOpened: state.setAlertOpened,
-    setQrMessage: state.setQrMessage,
-  }));
+  const { alertOpened, message, isError, setAlertOpened } = useQrCamera(
+    (state) => ({
+      alertOpened: state.alertOpened,
+      message: state.message,
+      isError: state.isError,
+      setAlertOpened: state.setAlertOpened,
+    })
+  );
 
   useEffect(() => {
     useQrCamera.getState();
