@@ -68,9 +68,14 @@ const QRCode = (props: ConfigProps) => {
 
     // cleanup function when component will unmount
     return () => {
-      html5QrcodeScanner.clear().catch((error) => {
-        console.error("Failed to clear html5QrcodeScanner. ", error);
-      });
+      html5QrcodeScanner
+        .clear()
+        .then((r) => {
+          console.log("cleared html5QrcodeScanner. ", r);
+        })
+        .catch((error) => {
+          console.error("Failed to clear html5QrcodeScanner. ", error);
+        });
     };
   }, []);
 
