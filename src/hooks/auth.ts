@@ -98,8 +98,9 @@ const useAuth = ({
       mutate(null);
     }
 
-    window.location.pathname = "/";
-  }, [error, mutate]);
+    // window.location.pathname = "/";
+    router.push("/");
+  }, [error, mutate, router]);
 
   useEffect(() => {
     if (middleware == "guest" && redirectIfAuthenticated && user)
